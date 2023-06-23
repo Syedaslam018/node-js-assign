@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apni Dukaan</title>
+    <style>
+        * {
+    background-color:#BBCE8A 
+}
+#list {
+    background-color: aquamarine;
+}
+button {
+    background-color: #B2F50A;
+}
+li {
+    padding: 1%;
+}
+li input {
+    margin-left: 5px;
+    margin-right: 5px;
+    background-color: #B2F50A;
+}
+li label {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Apni Dukaan</h1>
+    </header>
+    <div id="container">
+        <form class="form-floating" id="myForm" name="myForm" method="post">
+                <label for="itemname" class="form-label">Item Name</label>
+                <input type="text" id="itemname" class="form-control">
+                <label for="desc" class="form-label">Description</label>
+                <input type="text" id="desc" class="form-control">
+                <label for="price" class="form-label">Price</label>
+                <input type="number" id="price" class="form-control">
+                <label for="quant" class="form-label">Quantity</label>
+                <input type="number" id="quant" class="form-control">
+            <button type="submit" class="btn" id="btn">Add Item</button>
+        </form>
+    </div>
+    <div id="list">
+        <ul id="items">
+            <h3>product details</h3>
+        </ul>
+    </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        try {
+let myForm = document.getElementById('myForm');
+let ul = document.getElementById('items');
+
+//eventListners
+myForm.addEventListener('submit',onSubmit);
+
+
+//input values
+let itemName = document.getElementById('itemname');
+let itemDesc = document.getElementById('desc');
+let itemPrice = document.getElementById('price');
+let itemQuant = document.getElementById('quant');
+
+
+
+let myObj = {
+    iname: itemName.value,
+    idesc: itemDesc.value,
+    iprice: itemPrice.value,
+    iquant: itemQuant.value
+}
+
+
+//event function
+async function onSubmit(e){
+    e.preventDefault();
+    
+    myObj.iname = itemName.value;
+    myObj.idesc = itemDesc.value;
+    myObj.iprice = itemPrice.value;
+    myObj.iquant = itemQuant.value;
+    //console.log(myObj)
+
+    //adding to crud
+    let post = await axios.post("http://localhost:3000/add-expense", myObj)
+    console.log(post.data);
+    displayData(post.data);
+
+    //clearing the form
+    document.myForm.reset();
+}
+
+// function to display data from crud
+async function displayData(obj){
+    // console.log(obj)
+    let li = document.createElement('li');
+
+    // li.id = obj._id;
+    // li.innerHTML = obj.iname + '-----' + obj.idesc + '-----' + obj.iprice + '-----' + obj.iquant + '-----';
+    let itname = document.createElement('label')
+    itname.innerHTML = obj.name;
+
+    let itdesc = document.createElement('label')
+    itdesc.innerHTML = obj.description;
+
+
+    let itprice = document.createElement('label')
+    itprice.innerHTML = obj.price;
+
+
+
+    let itquant =  document.createElement('label')
+    itquant.id = obj.id;
+    itquant.innerHTML = obj.quantity;
+
+    li.appendChild(itname)
+    li.appendChild(itdesc)
+    li.appendChild(itprice)
+    li.appendChild(itquant)
+
+
+    let but1 = document.createElement('input');
+    but1.type = 'button';
+    but1.value = 'Buy1';
+    but1.className = 'btn';
+    but1.id = 'buy1';
+    li.appendChild(but1);
+
+    //buy 1 button function
+    but1.onclick = async function(e) {
+        if(obj.quantity >= 1){
+        document.getElementById(`${obj.id}`).innerHTML -= 1;
+               const but1put = await axios.put(`http://localhost:3000/delete-expense/${obj.id}?buy=1`, {
+                iname: obj.name,
+                idesc: obj.description,
+                iprice: obj.price,
+            iquant: obj.quantity-1
+            })
+        }else {
+            console.log('currently unavailable :(')
+        }
+            // location.reload();
+             
+            
+            
+              
+    }
+
+    let but2 = document.createElement('input');
+    but2.type = 'button';
+    but2.value = 'Buy2';
+    but2.className = 'btn';
+    but2.id = 'buy2';
+    li.appendChild(but2);
+
+    //buy2 onclick function
+    but2.onclick = async function() {
+        if(obj.quantity >= 2){
+        document.getElementById(`${obj.id}`).innerHTML -= 2;
+        let but2put = await axios.put(`http://localhost:3000/delete-expense/${obj.id}?buy=2`, {
+            iname: obj.name,
+            idesc: obj.description,
+            iprice: obj.price,
+            iquant: obj.quantity-2
+        })
+    }else{
+        console.log('currently unavailable :(')
+    }
+         location.reload();
+       // document.getElementById(obj.id).innerHTML -=2
+        
+    }
+    let but3 = document.createElement('input');
+    but3.type = 'button';
+    but3.value = 'Buy3';
+    but3.className = 'btn';
+    but3.id = 'buy1';
+    li.appendChild(but3);
+
+    //buy3 onclick function
+    but3.onclick = async  function() {
+        if(obj.quantity >= 3){
+        document.getElementById(`${obj.id}`).innerHTML -= 3;
+        let but3put = await axios.put(`http://localhost:3000/delete-expense/${obj.id}?buy=3`, {
+            iname: obj.name,
+            idesc: obj.description,
+            iprice: obj.price,
+            iquant: obj.quantity-3
+        })
+    }else{
+        console.log('currently unavailable :(')
+    }
+       
+       
+        
+    }
+    ul.appendChild(li);
+}
+
+
+ window.addEventListener("DOMContentLoaded",async () => {
+    const pageLoad = await axios.get("http://localhost:3000/add-expense");
+    // console.log(pageLoad.data);
+
+    for(var i=0; i<pageLoad.data.length; i++){
+        displayData(pageLoad.data[i]);
+    }
+       
+})
+}
+
+
+catch(error) {
+    console.log(error)
+}
+    </script>
+</body>
+</html>

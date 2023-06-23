@@ -1,0 +1,30 @@
+* {
+    background-color:#BBCE8A 
+}
+#list {
+    background-color: aquamarine;
+}
+button {
+    background-color: #B2F50A;
+}
+
+li {
+    padding: 1%;
+}
+
+/* button {
+    padding: 1%;
+} */
+
+li input {
+    /* padding: 1%; 
+    */
+    margin-left: 5px;
+    margin-right: 5px;
+    background-color: #B2F50A;
+}
+
+li label {
+    margin-left: 5px;
+    margin-right: 5px;
+}
